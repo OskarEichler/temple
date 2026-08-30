@@ -71,13 +71,15 @@ module Temple
         '=>',
       ].freeze
 
+      STATIC_START_PATTERN = /\A\s*(?:["'%\[\{\(]|\d|true\b|false\b|nil\b)/
+
       class << self
         def available?
           true
         end
 
         def static?(code)
-          return false if code.nil? || code.strip.empty? || syntax_error?(code)
+          return false if code.nil? || code.strip.empty? || !STATIC_START_PATTERN.match?(code) || syntax_error?(code)
 
           Ripper.lex(code).each do |_, token, str|
             case token

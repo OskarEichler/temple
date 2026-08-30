@@ -65,6 +65,8 @@ module Temple
           temple
         end
       elsif PARSER_ENGINE == :ripper
+        STRING_START_PATTERN = /\A\s*["'%]/
+
         class << self
           # `code` param must be valid string literal
           def compile(code)
@@ -167,6 +169,7 @@ module Temple
         private
 
         def string_literal?(code)
+          return false unless STRING_START_PATTERN.match?(code)
           return false if SyntaxChecker.syntax_error?(code)
 
           type, instructions = Ripper.sexp(code)
